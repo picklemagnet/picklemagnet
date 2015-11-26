@@ -1,0 +1,8 @@
+body, html {
+	background-color: gray;
+	color: white;
+}
+
+input {
+	display:block;
+}
