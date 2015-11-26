@@ -1,6 +1,6 @@
 // -- set vars --
-var draw_distance; // distance from cursor to dot before line is drawn
-var dots_number;
+var draw_distance = 75; // distance from cursor to dot before line is drawn
+var dots_number = 2000;
 
 // -- runtime vars --
 var mousePos;
@@ -21,7 +21,7 @@ function parse_query() {
 	var stars = get_parameter_by_name('stars')
 	dots_number = isNaN(stars) ? 2000 : stars;
 }
-parse_query();
+if (window.location.search) parse_query();
 
 function set_dimensions() {
 	canvas.node.width  = window.innerWidth;
@@ -55,7 +55,7 @@ function draw() {
         if (distance < draw_distance) {
             var nearest = find_nearest_dots(dot);
             canvas.context.strokeStyle = "white";
-            canvas.context.lineWidth = (draw_distance - distance)/50;
+            canvas.context.lineWidth = (draw_distance - distance)/draw_distance;
             for (var j = 0; j < nearest.length; j++) {
                 canvas.context.moveTo(dot.x, dot.y);
                 canvas.context.lineTo(nearest[j].x, nearest[j].y);
@@ -78,7 +78,7 @@ window.addEventListener('resize', function(event) {
 
 // -- utility functions --
 function get_distance(point1,point2) {
-	return Math.sqrt(Math.pow(point1.x-point2.x,2)+Math.pow(point1.y-point2.y,2));
+	return Math.abs(point1.x-point2.x)+Math.abs(point1.y-point2.y);
 }
 
 /*
