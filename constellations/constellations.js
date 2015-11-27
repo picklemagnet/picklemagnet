@@ -3,9 +3,8 @@ var draw_distance = 75; // distance from cursor to dot before line is drawn
 var dots_number = 2000;
 
 // -- runtime vars --
-var mousePos;
+var mousePos = {x:0,y:0};
 var dots;
-var mouseDown = false;
 var canvas = {};
 canvas.node = document.getElementById('canvas');
 canvas.context = canvas.node.getContext('2d');
@@ -40,6 +39,7 @@ dots = create_dots();
 
 function draw() {
     canvas.context.fillStyle = "black";
+	canvas.context.clearRect(0, 0, canvas.node.width, canvas.node.height);
 	canvas.context.fillRect(0, 0, canvas.node.width, canvas.node.height);
   
     for (var i = 0; i < dots.length; i++) {
@@ -52,10 +52,10 @@ function draw() {
         canvas.context.fill();
         
         var distance = get_distance(mousePos, dot);
-        if (distance < draw_distance * (mouseDown ? 2.5 : 1)) {
+        if (distance < draw_distance) {
             var nearest = find_nearest_dots(dot);
             canvas.context.strokeStyle = "white";
-            canvas.context.lineWidth = (1 - distance/draw_distance);
+            canvas.context.lineWidth = 1 - distance/draw_distance;
             for (var j = 0; j < nearest.length; j++) {
                 canvas.context.moveTo(dot.x, dot.y);
                 canvas.context.lineTo(nearest[j].x, nearest[j].y);
@@ -69,14 +69,6 @@ setInterval(draw,33);
 // -- event listeners --
 canvas.node.addEventListener('mousemove', function(event) {
 	mousePos = new MousePosition(event);
-});
-
-window.addEventListener('mousedown', function(event) {
-	mouseDown = true;
-});
-
-window.addEventListener('mouseup', function(event) {
-	mouseDown = false;
 });
 
 window.addEventListener('resize', function(event) {
