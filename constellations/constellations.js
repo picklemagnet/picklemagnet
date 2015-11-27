@@ -4,11 +4,12 @@ var dots_number = 2000;
 
 // -- runtime vars --
 var mousePos = {x:0,y:0};
-var dots;
+var dots = [];
 var canvas = {};
 canvas.node = document.getElementById('canvas');
 canvas.context = canvas.node.getContext('2d');
 
+// thanks to jolly.exe @ stack overflow
 function parse_query() {
 	function get_parameter_by_name(name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -30,12 +31,14 @@ function set_dimensions() {
 set_dimensions();
 
 function create_dots() {
-	d = [];
+	dots = [];
 	for (var i = 0; i < dots_number; i++)
-		d.push(new GenerateDot());
-	return d;
+		dots.push(new GenerateDot());
+	for (var i = 0; i < dots_number; i++)
+		dots[i].nearest = find_nearest_dots(dots[i]);
+	return dots;
 }
-dots = create_dots();
+create_dots();
 
 function draw() {
     canvas.context.fillStyle = "black";
@@ -53,12 +56,11 @@ function draw() {
         
         var distance = get_distance(mousePos, dot);
         if (distance < draw_distance) {
-            var nearest = find_nearest_dots(dot);
             canvas.context.strokeStyle = "white";
             canvas.context.lineWidth = 1 - distance/draw_distance;
-            for (var j = 0; j < nearest.length; j++) {
+            for (var j = 0; j < dot.nearest.length; j++) {
                 canvas.context.moveTo(dot.x, dot.y);
-                canvas.context.lineTo(nearest[j].x, nearest[j].y);
+                canvas.context.lineTo(dot.nearest[j].x, dot.nearest[j].y);
             }
             canvas.context.stroke();
         }
@@ -73,7 +75,7 @@ canvas.node.addEventListener('mousemove', function(event) {
 
 window.addEventListener('resize', function(event) {
 	set_dimensions();
-	dots = create_dots();
+	create_dots();
 });
 
 // -- utility functions --
