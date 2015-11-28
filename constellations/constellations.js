@@ -47,11 +47,11 @@ function draw() {
   
     for (var i = 0; i < dots.length; i++) {
         var dot = dots[i];
-        dot.x += (Math.random() - 0.5); dot.y += (Math.random() - 0.5);
+        dot.x += (Math.random() - 0.5)/5; dot.y += (Math.random() - 0.5)/5;
         // draw dot
         canvas.context.beginPath();
         canvas.context.fillStyle = "white";
-        canvas.context.arc(dot.x ,dot.y, 1, 0, Math.PI*2, true);
+        canvas.context.arc(dot.x ,dot.y, 1, 0, dot.b, true);
         canvas.context.fill();
         
         var distance = get_distance(mousePos, dot);
@@ -109,6 +109,7 @@ function find_nearest_dots(dot) {
 function GenerateDot() {
     this.x = Math.random() * canvas.node.width;
     this.y = Math.random() * canvas.node.height;
+	this.b = Math.random() * (Math.PI * 2);
 }
 
 function MousePosition(event) {
